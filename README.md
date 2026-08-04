@@ -1,5 +1,8 @@
 # page-automation
 
+[![Follow @SocketSecurity](https://raw.githubusercontent.com/SocketDev/socket-page-automation/HEAD/assets/fleet/badge-follow-x.svg)](https://twitter.com/SocketSecurity)
+[![Follow @socket.dev on Bluesky](https://raw.githubusercontent.com/SocketDev/socket-page-automation/HEAD/assets/fleet/badge-follow-bluesky.svg)](https://bsky.app/profile/socket.dev)
+
 Browser page-automation and an anti-bot challenge cadence for npm-style
 human-verification flows.
 
