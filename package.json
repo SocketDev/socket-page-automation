@@ -1,0 +1,60 @@
+{
+  "name": "@socketsecurity/page-automation",
+  "version": "0.1.0",
+  "description": "Browser page-automation and an anti-bot challenge cadence for npm-style human-verification flows",
+  "license": "MIT",
+  "type": "module",
+  "files": [
+    "dist/**/*"
+  ],
+  "sideEffects": false,
+  "main": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
+  "exports": {
+    ".": {
+      "source": "./src/index.mts",
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
+    },
+    "./npm": {
+      "source": "./src/npm/index.mts",
+      "types": "./dist/npm/index.d.mts",
+      "default": "./dist/npm/index.mjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "scripts": {
+    "build": "node node_modules/typescript/bin/tsc -p tsconfig.build.json",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check",
+    "lint": "oxlint",
+    "prepublishOnly": "echo 'ERROR: Use GitHub Actions workflow for publishing' && exit 1",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "type": "node node_modules/typescript/bin/tsc --noEmit -p tsconfig.json"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "oxfmt": "catalog:",
+    "oxlint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  },
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": ">=11.0.0 <12.0.0",
+      "onFail": "error"
+    }
+  },
+  "engines": {
+    "node": ">=24",
+    "npm": ">=12.0.1",
+    "pnpm": ">=11.0.5"
+  }
+}

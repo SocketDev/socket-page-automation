@@ -1,0 +1,13 @@
+catalog:
+  '@types/node': 26.1.1
+  '@vitest/coverage-v8': 4.1.10
+  'oxfmt': 0.60.0
+  'oxlint': 1.75.0
+  'typescript': 7.0.2
+  'vitest': 4.1.10
+
+minimumReleaseAge: 10080
+minimumReleaseAgeExclude:
+  - '@socketregistry/*'
+  - '@socketsecurity/*'
+saveExact: true
