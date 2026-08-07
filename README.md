@@ -12,7 +12,7 @@ seam instead of blind-retrying, tick the cooldown, and re-attempt within a
 budget. After one solved challenge, a batch of follow-up operations rides the
 same cooldown window instead of re-challenging per operation. The pause is an
 injected async seam, `(ctx) => Promise<void>`, so the core runs the same under
-Playwright, a content script, or a test clock — it never depends on a browser.
+Playwright, a content script, or a test clock - it never depends on a browser.
 
 ## Install
 
