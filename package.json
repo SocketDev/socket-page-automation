@@ -17,10 +17,40 @@
       "types": "./dist/index.d.mts",
       "default": "./dist/index.mjs"
     },
+    "./cadence/batch": {
+      "source": "./src/cadence/batch.mts",
+      "types": "./dist/cadence/batch.d.mts",
+      "default": "./dist/cadence/batch.mjs"
+    },
+    "./cadence/challenge-step": {
+      "source": "./src/cadence/challenge-step.mts",
+      "types": "./dist/cadence/challenge-step.d.mts",
+      "default": "./dist/cadence/challenge-step.mjs"
+    },
+    "./cadence/constants": {
+      "source": "./src/cadence/constants.mts",
+      "types": "./dist/cadence/constants.d.mts",
+      "default": "./dist/cadence/constants.mjs"
+    },
+    "./cadence/run-challenge-aware": {
+      "source": "./src/cadence/run-challenge-aware.mts",
+      "types": "./dist/cadence/run-challenge-aware.d.mts",
+      "default": "./dist/cadence/run-challenge-aware.mjs"
+    },
     "./npm": {
       "source": "./src/npm/index.mts",
       "types": "./dist/npm/index.d.mts",
       "default": "./dist/npm/index.mjs"
+    },
+    "./npm/facts": {
+      "source": "./src/npm/facts.mts",
+      "types": "./dist/npm/facts.d.mts",
+      "default": "./dist/npm/facts.mjs"
+    },
+    "./npm/selectors": {
+      "source": "./src/npm/selectors.mts",
+      "types": "./dist/npm/selectors.d.mts",
+      "default": "./dist/npm/selectors.mjs"
     },
     "./package.json": "./package.json"
   },

@@ -15,5 +15,9 @@
   "build": {
     "from": "npm-registry",
     "type": "js"
+  },
+  "fuzz": {
+    "exempt": true,
+    "reason": "Playwright page-automation glue: URL templating, step constructors, and locator stubs with no untrusted-input parse boundary; page interaction runs only under a live browser, so a coverage-guided unit lane has no meaningful target."
   }
 }
