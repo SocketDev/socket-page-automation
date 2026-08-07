@@ -2,21 +2,7 @@ import { COOLDOWN_WINDOW_MS } from './constants.mts'
 import { runChallengeAware } from './run-challenge-aware.mts'
 
 import type { ChallengeAwareStep } from './challenge-step.mts'
-import type { ChallengeAwareOptions } from './run-challenge-aware.mts'
-
-/** A cooldown window opened by a solved challenge. */
-export interface CooldownWindow {
-  openedAt: number
-  windowMs: number
-}
-
-/** Open a cooldown window at `openedAt` lasting `windowMs`. Pure. */
-export function openCooldownWindow(
-  openedAt: number,
-  windowMs: number = COOLDOWN_WINDOW_MS,
-): CooldownWindow {
-  return { openedAt, windowMs }
-}
+import type { ChallengeAwareConfig } from './run-challenge-aware.mts'
 
 /**
  * Whether `now` still falls inside the cooldown window, i.e. a batch of
@@ -32,13 +18,37 @@ export function isCooldownActive(
   return now - window.openedAt < window.windowMs
 }
 
-/** Options for {@link runChallengeAwareBatch}. */
-export interface BatchOptions
-  extends Omit<ChallengeAwareOptions, 'onChallengeCleared'> {
+/**
+ * A cooldown window opened by a solved challenge.
+ */
+export interface CooldownWindow {
+  openedAt: number
+  windowMs: number
+}
+
+/**
+ * Open a cooldown window at `openedAt` lasting `windowMs`. Pure.
+ */
+export function openCooldownWindow(
+  openedAt: number,
+  windowMs: number = COOLDOWN_WINDOW_MS,
+): CooldownWindow {
+  return { openedAt, windowMs }
+}
+
+/**
+ * Config for {@link runChallengeAwareBatch}.
+ */
+export interface BatchConfig extends Omit<
+  ChallengeAwareConfig,
+  'onChallengeCleared'
+> {
   windowMs?: number | undefined
 }
 
-/** The outcome of a batch run. */
+/**
+ * The outcome of a batch run.
+ */
 export interface BatchResult<T> {
   challengesSolved: number
   cooldown: CooldownWindow | undefined
@@ -54,25 +64,25 @@ export interface BatchResult<T> {
  */
 export async function runChallengeAwareBatch<T>(
   operations: ReadonlyArray<() => Promise<ChallengeAwareStep<T>>>,
-  options: BatchOptions,
+  config: BatchConfig,
 ): Promise<BatchResult<T>> {
-  const opts = { __proto__: null, ...options } as BatchOptions
-  const now = opts.now ?? Date.now
-  const windowMs = opts.windowMs ?? COOLDOWN_WINDOW_MS
+  const cfg = { __proto__: null, ...config } as BatchConfig
+  const now = cfg.now ?? Date.now
+  const windowMs = cfg.windowMs ?? COOLDOWN_WINDOW_MS
   const results: T[] = []
   let challengesSolved = 0
   let cooldown: CooldownWindow | undefined
   for (let i = 0, { length } = operations; i < length; i += 1) {
     const operation = operations[i]!
     const value = await runChallengeAware(operation, {
-      budgetMs: opts.budgetMs,
-      label: opts.label,
+      budgetMs: cfg.budgetMs,
+      label: cfg.label,
       now,
       onChallengeCleared: ({ clearedAt }) => {
         challengesSolved += 1
         cooldown = openCooldownWindow(clearedAt, windowMs)
       },
-      pause: opts.pause,
+      pause: cfg.pause,
     })
     results.push(value)
   }

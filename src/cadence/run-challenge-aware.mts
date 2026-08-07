@@ -2,7 +2,9 @@ import { CHALLENGE_BUDGET_MS } from './constants.mts'
 
 import type { ChallengeAwareStep } from './challenge-step.mts'
 
-/** The context handed to the injected pause seam on each challenge tick. */
+/**
+ * The context handed to the injected pause seam on each challenge tick.
+ */
 export interface PauseContext {
   attempt: number
   budgetMs: number
@@ -18,8 +20,10 @@ export interface PauseContext {
  */
 export type PauseSeam = (ctx: PauseContext) => Promise<void>
 
-/** Options for {@link runChallengeAware}. */
-export interface ChallengeAwareOptions {
+/**
+ * Config for {@link runChallengeAware}.
+ */
+export interface ChallengeAwareConfig {
   budgetMs?: number | undefined
   label: string
   now?: (() => number) | undefined
@@ -57,11 +61,11 @@ export function formatChallengeTimeout(config: {
  */
 export async function runChallengeAware<T>(
   operation: () => Promise<ChallengeAwareStep<T>>,
-  options: ChallengeAwareOptions,
+  config: ChallengeAwareConfig,
 ): Promise<T> {
-  const opts = { __proto__: null, ...options } as ChallengeAwareOptions
-  const budgetMs = opts.budgetMs ?? CHALLENGE_BUDGET_MS
-  const now = opts.now ?? Date.now
+  const cfg = { __proto__: null, ...config } as ChallengeAwareConfig
+  const budgetMs = cfg.budgetMs ?? CHALLENGE_BUDGET_MS
+  const now = cfg.now ?? Date.now
   const started = now()
   let attempt = 0
   let sawChallenge = false
@@ -69,8 +73,8 @@ export async function runChallengeAware<T>(
     attempt += 1
     const step = await operation()
     if (step.kind === 'done') {
-      if (sawChallenge && opts.onChallengeCleared) {
-        opts.onChallengeCleared({ clearedAt: now() })
+      if (sawChallenge && cfg.onChallengeCleared) {
+        cfg.onChallengeCleared({ clearedAt: now() })
       }
       return step.value
     }
@@ -79,9 +83,9 @@ export async function runChallengeAware<T>(
     }
     const elapsedMs = now() - started
     if (elapsedMs >= budgetMs) {
-      throw new Error(formatChallengeTimeout({ budgetMs, label: opts.label }))
+      throw new Error(formatChallengeTimeout({ budgetMs, label: cfg.label }))
     }
     sawChallenge = true
-    await opts.pause({ attempt, budgetMs, elapsedMs, label: opts.label })
+    await cfg.pause({ attempt, budgetMs, elapsedMs, label: cfg.label })
   }
 }

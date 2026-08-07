@@ -14,7 +14,7 @@ export {
   runChallengeAware,
 } from './cadence/run-challenge-aware.mts'
 export type {
-  ChallengeAwareOptions,
+  ChallengeAwareConfig,
   PauseContext,
   PauseSeam,
 } from './cadence/run-challenge-aware.mts'
@@ -24,7 +24,7 @@ export {
   runChallengeAwareBatch,
 } from './cadence/batch.mts'
 export type {
-  BatchOptions,
+  BatchConfig,
   BatchResult,
   CooldownWindow,
 } from './cadence/batch.mts'

@@ -1,9 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 
-import {
-  challengeStep,
-  doneStep,
-} from '../../src/cadence/challenge-step.mts'
+import { challengeStep, doneStep } from '../../src/cadence/challenge-step.mts'
 import { runChallengeAware } from '../../src/cadence/run-challenge-aware.mts'
 
 import type { ChallengeAwareStep } from '../../src/cadence/challenge-step.mts'

@@ -11,5 +11,7 @@ export const COOLDOWN_WINDOW_MS = 5 * 60_000
  */
 export const CHALLENGE_BUDGET_MS = 10 * 60_000
 
-/** How long to wait between challenge polls while the operator solves it. */
+/**
+ * How long to wait between challenge polls while the operator solves it.
+ */
 export const CHALLENGE_POLL_MS = 5000

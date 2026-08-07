@@ -47,10 +47,10 @@ import {
 
 ### Subpath exports
 
-| Subpath | What it is | Dependencies |
-| --- | --- | --- |
-| `.` | The runtime-agnostic challenge-cadence state machine plus its constants. | none |
-| `./npm` | npm site knowledge: the `didOptForCooldown` cooldown opt-in selector, page and URL facts, and stub locators for the future bulk-action and trusted-publisher flows. | none |
+| Subpath | What it is                                                                                                                                                          | Dependencies |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
+| `.`     | The runtime-agnostic challenge-cadence state machine plus its constants.                                                                                            | none         |
+| `./npm` | npm site knowledge: the `didOptForCooldown` cooldown opt-in selector, page and URL facts, and stub locators for the future bulk-action and trusted-publisher flows. | none         |
 
 Two implementation seams are planned once consumers exist: `./driver` (the
 Playwright implementation of the pause seam) and `./in-page` (the content-script

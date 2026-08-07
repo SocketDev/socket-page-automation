@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
 import {
-  NPM_ORIGIN,
   npmOrgUrl,
   npmPackageSettingsUrl,
   npmWhoamiUrl,
@@ -21,10 +20,10 @@ describe('npm cooldown opt-in', () => {
 
 describe('npm facts', () => {
   it('builds absolute urls from the website origin', () => {
-    expect(npmWhoamiUrl()).toBe(`${NPM_ORIGIN}/-/whoami`)
-    expect(npmOrgUrl('socket')).toBe(`${NPM_ORIGIN}/org/socket`)
+    expect(npmWhoamiUrl()).toBe('https://www.npmjs.com/-/whoami')
+    expect(npmOrgUrl('socket')).toBe('https://www.npmjs.com/org/socket')
     expect(npmPackageSettingsUrl('@scope%2Fname')).toBe(
-      `${NPM_ORIGIN}/package/@scope%2Fname/access`,
+      'https://www.npmjs.com/package/@scope%2Fname/access',
     )
   })
 })

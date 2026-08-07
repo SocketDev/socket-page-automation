@@ -5,10 +5,7 @@ import {
   openCooldownWindow,
   runChallengeAwareBatch,
 } from '../../src/cadence/batch.mts'
-import {
-  challengeStep,
-  doneStep,
-} from '../../src/cadence/challenge-step.mts'
+import { challengeStep, doneStep } from '../../src/cadence/challenge-step.mts'
 
 import type { ChallengeAwareStep } from '../../src/cadence/challenge-step.mts'
 
