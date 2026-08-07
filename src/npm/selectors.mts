@@ -9,26 +9,13 @@ export interface LocatorHint {
 }
 
 /**
- * npm's challenge-cooldown opt-in checkbox. Ticking it lets a BATCH of
+ * Npm's challenge-cooldown opt-in checkbox. Ticking it lets a BATCH of
  * operations ride one approval instead of re-challenging per operation.
  */
 export const COOLDOWN_OPTIN_SELECTOR = 'input[name="didOptForCooldown"]'
 
 /**
- * The org/package bulk-action row checkbox. STUB for 0.1.0 — the confirmed
- * selector lands with the driver layer that drives bulk member/package
- * operations.
- */
-export function bulkActionRowCheckboxLocator(): LocatorHint {
-  return {
-    description: 'row-selection checkbox in an org/package bulk-action table',
-    selector: 'input[type="checkbox"][data-testid="bulk-select-row"]',
-  }
-}
-
-/**
- * The apply-bulk-action control. STUB for 0.1.0 — the confirmed selector lands
- * with the driver layer.
+ * The apply-bulk-action control.
  */
 export function bulkActionApplyLocator(): LocatorHint {
   return {
@@ -38,7 +25,19 @@ export function bulkActionApplyLocator(): LocatorHint {
   }
 }
 
-/** The trusted-publisher form fields npm exposes on a package's settings. */
+/**
+ * The org/package bulk-action row checkbox.
+ */
+export function bulkActionRowCheckboxLocator(): LocatorHint {
+  return {
+    description: 'row-selection checkbox in an org/package bulk-action table',
+    selector: 'input[type="checkbox"][data-testid="bulk-select-row"]',
+  }
+}
+
+/**
+ * The trusted-publisher form fields npm exposes on a package's settings.
+ */
 export type TrustedPublisherField =
   | 'environment'
   | 'owner'
@@ -46,8 +45,7 @@ export type TrustedPublisherField =
   | 'workflow'
 
 /**
- * A trusted-publisher form-field locator. STUB for 0.1.0 — the confirmed
- * selectors land with the driver layer that configures trusted publishing.
+ * A trusted-publisher form-field locator.
  */
 export function trustedPublisherFieldLocator(
   field: TrustedPublisherField,
