@@ -19,5 +19,13 @@
   "fuzz": {
     "exempt": true,
     "reason": "Playwright page-automation glue: URL templating, step constructors, and locator stubs with no untrusted-input parse boundary; page interaction runs only under a live browser, so a coverage-guided unit lane has no meaningful target."
+  },
+  "release": {
+    "provenanceOrphanBaseline": [
+      {
+        "id": "@socketsecurity/page-automation@0.0.0",
+        "reason": "Published before the provenance pipeline was wired up: the npm attestation endpoint answers 404 for this version, so it carries no SLSA statement at all. npm mints attestations at publish time and they are immutable, so no tag and no commit can repair it. publishConfig.provenance is true, so the next release carries an attestation."
+      }
+    ]
   }
 }
