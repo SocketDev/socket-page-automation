@@ -498,6 +498,9 @@ importers:
       regjsparser:
         specifier: 'catalog:'
         version: 0.13.2
+      rolldown:
+        specifier: 1.2.3
+        version: 1.2.3
       semver:
         specifier: 'catalog:'
         version: 7.8.5
