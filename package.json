@@ -4,8 +4,7 @@
   "description": "Browser page-automation and an anti-bot challenge cadence for npm-style human-verification flows",
   "license": "MIT",
   "files": [
-    "dist/**/*",
-    "CHANGELOG.md"
+    "dist/**/*"
   ],
   "type": "module",
   "sideEffects": false,
