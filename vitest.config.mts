@@ -8,5 +8,6 @@ export default defineConfig({
     },
     environment: 'node',
     include: ['test/**/*.test.mts'],
+    passWithNoTests: true,
   },
 })
