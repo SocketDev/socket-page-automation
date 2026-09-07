@@ -3,7 +3,7 @@ import { CHALLENGE_BUDGET_MS } from './constants.mts'
 import type { ChallengeAwareStep } from './challenge-step.mts'
 
 /**
- * The context handed to the injected pause seam on each challenge tick.
+ * The context handed to the injected pause callback on each challenge tick.
  */
 export interface PauseContext {
   attempt: number
@@ -13,10 +13,11 @@ export interface PauseContext {
 }
 
 /**
- * The injected pause seam. A challenge is solved by a PERSON, so the runtime
- * that owns the page (Playwright, a content script, a test clock) supplies this
- * async pause. The core never touches a browser; it only orchestrates the
- * pause-then-retry rhythm around whatever pause the caller injects.
+ * The injected pause callback. A challenge is solved by a PERSON, so the
+ * runtime that owns the page (Playwright, a content script, a test clock)
+ * supplies this async pause. The core never touches a browser; it only
+ * orchestrates the pause-then-retry rhythm around whatever pause the caller
+ * injects.
  */
 export type PauseSeam = (ctx: PauseContext) => Promise<void>
 
@@ -51,13 +52,13 @@ export function formatChallengeTimeout(config: {
 
 /**
  * The shared anti-bot rhythm, runtime-agnostic. Runs `operation`, and each time
- * it reports a human-verification challenge, PAUSE through the injected seam
- * (bounded by the budget, NEVER a blind retry ladder), then re-attempt. A
- * `done` step returns its value; a `retry` step loops without pausing; a
- * `challenge` step pauses. When a challenge was seen and the operation then
- * finishes, `onChallengeCleared` fires once so the caller can open a cooldown
- * window for a batch of follow-up operations. The clock is injectable so tests
- * run in milliseconds.
+ * it reports a human-verification challenge, PAUSE through the injected
+ * callback (bounded by the budget, NEVER a blind retry ladder), then
+ * re-attempt. A `done` step returns its value; a `retry` step loops without
+ * pausing; a `challenge` step pauses. When a challenge was seen and the
+ * operation then finishes, `onChallengeCleared` fires once so the caller can
+ * open a cooldown window for a batch of follow-up operations. The clock is
+ * injectable so tests run in milliseconds.
  */
 export async function runChallengeAware<T>(
   operation: () => Promise<ChallengeAwareStep<T>>,
