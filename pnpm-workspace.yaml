@@ -43,7 +43,7 @@ catalog:
   # imports the scoped name. 1.3.10 is inside the 7-day soak, so it carries a
   # dated minimumReleaseAgeExclude entry above.
   'typebox': 1.3.25
-  '@socketregistry/packageurl-js': 1.5.2
+  '@socketregistry/packageurl-js': 1.5.3
   # -stable aliases: pnpm `overrides:` can't redirect a package's own
   # name when used INSIDE that same package — Node ESM treats it as a
   # self-reference and resolves through the local exports map, not
@@ -54,13 +54,13 @@ catalog:
   # version regardless of where the importing file lives. src/ +
   # test/ code uses the canonical name because vitest aliases that
   # to local src/.
-  '@socketregistry/packageurl-js-stable': 'npm:@socketregistry/packageurl-js@1.5.2'
-  '@socketsecurity/lib': 7.0.1
-  '@socketsecurity/lib-stable': 'npm:@socketsecurity/lib@7.0.1'
+  '@socketregistry/packageurl-js-stable': 'npm:@socketregistry/packageurl-js@1.5.3'
+  '@socketsecurity/lib': 7.0.3
+  '@socketsecurity/lib-stable': 'npm:@socketsecurity/lib@7.0.3'
   '@socketsecurity/registry': 2.0.5
   '@socketsecurity/registry-stable': 'npm:@socketsecurity/registry@2.0.5'
-  '@socketsecurity/sdk': 4.1.4
-  '@socketsecurity/sdk-stable': 'npm:@socketsecurity/sdk@4.1.4'
+  '@socketsecurity/sdk': 4.1.5
+  '@socketsecurity/sdk-stable': 'npm:@socketsecurity/sdk@4.1.5'
   '@types/mdast': 4.0.4
   '@types/node': 26.4.1
   '@types/semver': 7.8.0
@@ -399,7 +399,6 @@ patchedDependencies:
   # honors namespace selection, wildcards, and exclusions.
   # Generated terminal authorization and process accessors support setup
   # through the shared public library API without a version change.
-  '@socketsecurity/lib@7.0.1': patches/@socketsecurity__lib@7.0.1.patch
   # dedup: workflow variable presence (managed by socket-wheelhouse sync):
   # Local CI must accept explicitly supplied empty workflow variables.
   # The fleet payload client ID defaults to empty when no app is configured.
