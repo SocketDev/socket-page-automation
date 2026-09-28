@@ -7,10 +7,6 @@ packages:
 trustPolicyExcludePrune: true
 
 trustPolicy: no-downgrade
-trustPolicyExclude:
-  - '@playwright/mcp@0.0.80'
-  - 'playwright@1.63.0-alpha-2026-08-31'
-  - 'playwright-core@1.63.0-alpha-2026-08-31'
 enableGlobalVirtualStore: true
 
 # Refuse transitive (sub-) deps declared via git/tarball/local-tarball
@@ -39,7 +35,7 @@ catalog:
   '@sinclair/typebox': 0.34.52
   'ecc-agentshield': 1.6.0
   'fallow': 3.27.0
-  'mcp-tada': 0.1.0
+  'mcp-tada': 0.4.0
   'run-local-ci': 0.18.1
   'sharp': 0.35.4
   # typebox 1.x — the unscoped rewrite of @sinclair/typebox. Both names are
@@ -134,7 +130,7 @@ catalog:
   # override below pins every transitive `vite` (vitest, @vitest/*,
   # plugin authors) to it.
   'typescript': 7.1.0-dev.20260920.1
-  'vitest': 5.0.0
+  'vitest': 5.0.1
   '@vitest/coverage-v8': 5.0.1
   '@bcoe/v8-coverage': 1.0.2
   ast-v8-to-istanbul: 1.0.6
