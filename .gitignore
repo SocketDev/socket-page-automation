@@ -59,6 +59,7 @@
 **/.claude/hooks/fleet/_shared/dispatch-table.generated.mts
 **/.claude/hooks/fleet/_dist/fleet-pack.excluded.generated.cjs
 **/.claude/hooks/fleet/_shared/validators.generated.mts
+**/scripts/fleet/lib/ata-validators.generated.cjs
 **/.claude/hooks/fleet/_shared/node.path
 **/.claude/hooks/fleet/_shared/snapshot-blob.path
 **/.claude/hooks/fleet/_dist/fleet-pack.snapshot.generated.cjs
@@ -70,7 +71,7 @@
 
 # Derived cross-harness rule adapters — generated per-repo, per-platform by
 # the multi-agent scaffolding (setup / init / sync) script from .claude/skills/
-# and CLAUDE.md, never committed. A tracked symlink checks out as a plain
+# and AGENTS.md, never committed. A tracked symlink checks out as a plain
 # pointer file on Windows, so each host gets a real symlink generated on its
 # own OS. Tracking them only produces churn + merge conflicts. Keep in sync
 # with ADAPTERS in scripts/fleet/gen/harness-adapters.mts + the .agents/ mirror
@@ -89,7 +90,7 @@
 /.kiro/
 /.opencode/
 /.windsurf/
-/AGENTS.md
+/CLAUDE.md
 /opencode.json
 
 # VS Code: ignore the dir contents so a hidden tasks.json with a `folderOpen`
@@ -111,7 +112,13 @@ Thumbs.db
 # lock-step with GENERATED_GLOBS (scripts/fleet/constants/
 # generated-globs.mts) by generated-globs-are-consistent.mts.
 **/build/
+# `build` is also the fleet script namespace for build infrastructure. Keep
+# that source and its path-aligned tests visible while ignoring build outputs.
+!**/scripts/fleet/build/
+!**/test/fleet/*/build/
+!**/test/repo/*/build/
 **/dist/
+**/target/
 **/tmp/
 /template/generated/
 **/out/
@@ -300,6 +307,7 @@ pnpm-debug.log
 !/.github/workflows/sweep-jobs.yml
 !/.gitignore
 !/.npmrc
+!/AGENTS.md
 !/assets/
 !/assets/fleet/
 !/assets/fleet/badge-follow-bluesky.svg
@@ -4928,6 +4936,8 @@ test/fleet/unit/credentials/otp/bindings.test.mts
 test/fleet/unit/fix/plan.test.mts
 test/fleet/unit/fix/run.test.mts
 test/fleet/unit/lockstep/emit-mirror-globs.test.mts
+test/fleet/unit/registry-infra/cargo/placeholder.test.mts
+test/fleet/unit/registry-infra/npm/placeholder.test.mts
 test/fleet/unit/setup/lib/pnpm-path.test.mts
 # </fleet-pack>
 # </fleet>
