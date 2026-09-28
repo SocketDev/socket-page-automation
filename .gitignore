@@ -300,6 +300,7 @@ pnpm-debug.log
 !/.github/workflows/sweep-jobs.yml
 !/.gitignore
 !/.npmrc
+!/AGENTS.md
 !/assets/
 !/assets/fleet/
 !/assets/fleet/badge-follow-bluesky.svg
@@ -2698,7 +2699,6 @@ opencode.json
 .github/local-ci.Dockerfile
 .github/zizmor.yml
 .mcp.json
-AGENTS.md
 docs/design/fleet/README.md
 docs/design/fleet/components.css
 docs/design/fleet/tokens.css
