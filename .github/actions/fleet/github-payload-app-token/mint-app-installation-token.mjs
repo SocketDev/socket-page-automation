@@ -16,12 +16,13 @@
  * every action passes a scoped (non-blank) PERMISSIONS.
  *
  * Env:
+ *   CREDENTIAL_ROLE (optional) pr or release; selects only that SOCKET_* pair
  *   CLIENT_ID       (required) the GitHub App Client ID
  *   APP_PRIVATE_KEY (required) the app private key (PEM)
  *   OWNER           (required) org/owner to mint the installation token for
  *   PERMISSIONS     (optional) JSON object, e.g. {"contents":"write"}; an empty
  *                              object is rejected, would mint blanket perms
- *   REPOSITORIES    (optional) newline/comma repo NAMES to scope the token to
+ *   REPOSITORIES    (required) newline/comma repo NAMES to scope the token to
  *   GITHUB_OUTPUT   (required) set by the runner; token is written here.
  */
 
@@ -32,6 +33,12 @@ import process from 'node:process'
 import { pathToFileURL } from 'node:url'
 
 function die(message) {
+  if (process.env['CREDENTIAL_ROLE'] !== undefined) {
+    process.stderr.write(
+      '[mint-app-token] Local App token mint failed. Where: protected credential child. Saw: invalid credentials, request, or installation grant. Fix: verify the selected App pair and its existing repository permissions.\n',
+    )
+    process.exit(1)
+  }
   process.stderr.write(`[mint-app-token] ${message}\n`)
   process.exit(1)
 }
@@ -223,23 +230,52 @@ export function formatAppTokenMintFailure(config) {
 }
 
 // Split a REPOSITORIES string (newline/comma repo NAMES) into the access-token
-// request's `repositories` array, or undefined when blank. Pure (the raw string
-// is the argument) + exported so it is unit-testable.
+// request's `repositories` array. The raw string is the argument. Exported for
+// unit tests.
 export function parseRepositories(rawInput) {
   const raw = rawInput?.trim()
   if (!raw) {
-    return undefined
+    throw new Error(
+      'REPOSITORIES is required. Where: App token repository scope. Saw: a blank value; wanted one or more repository names. Fix: pass the repositories action input.',
+    )
   }
   const names = raw
     .split(/[\n,]/)
     .map(s => s.trim())
     .filter(Boolean)
-  return names.length ? names : undefined
+  if (!names.length) {
+    throw new Error(
+      'REPOSITORIES is required. Where: App token repository scope. Saw: no repository names; wanted one or more names. Fix: pass comma-separated repository names.',
+    )
+  }
+  return names
+}
+
+export function appCredentialEnvironment(role) {
+  if (role === undefined) {
+    return {
+      __proto__: null,
+      clientId: 'CLIENT_ID',
+      privateKey: 'APP_PRIVATE_KEY',
+    }
+  }
+  if (role !== 'pr' && role !== 'release') {
+    throw new Error(
+      'App credential role is invalid. Where: CREDENTIAL_ROLE. Saw: unsupported role. Fix: select pr or release.',
+    )
+  }
+  const prefix = `SOCKET_${role.toUpperCase()}`
+  return {
+    __proto__: null,
+    clientId: `${prefix}_CLIENT_ID`,
+    privateKey: `${prefix}_APP_PRIVATE_KEY`,
+  }
 }
 
 async function main() {
-  const clientId = env('CLIENT_ID')
-  const privateKey = env('APP_PRIVATE_KEY')
+  const credentials = appCredentialEnvironment(process.env['CREDENTIAL_ROLE'])
+  const clientId = env(credentials.clientId)
+  const privateKey = env(credentials.privateKey)
   const owner = env('OWNER')
   const permissions = parsePermissions(process.env['PERMISSIONS'])
   const repositories = parseRepositories(process.env['REPOSITORIES'])
@@ -299,9 +335,7 @@ async function main() {
   if (permissions !== undefined) {
     tokenBody.permissions = permissions
   }
-  if (repositories !== undefined) {
-    tokenBody.repositories = repositories
-  }
+  tokenBody.repositories = repositories
   const minted = await gh(
     'POST',
     `/app/installations/${installationId}/access_tokens`,
@@ -324,7 +358,9 @@ async function main() {
     die(`token mint returned no token. Saw: ${minted.body}.`)
   }
 
-  process.stdout.write(`::add-mask::${token}\n`)
+  if (process.env['CREDENTIAL_ROLE'] === undefined) {
+    process.stdout.write(`::add-mask::${token}\n`)
+  }
   appendFileSync(env('GITHUB_OUTPUT'), `token=${token}\n`)
 
   // Expose the app slug, from the installation lookup, so the caller can build
