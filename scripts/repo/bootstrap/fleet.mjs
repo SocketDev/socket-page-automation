@@ -17225,6 +17225,67 @@ function refreshFleetPackCheckoutExcludes(config) {
     `${withoutManaged ? `${withoutManaged}\n` : ''}${block}\n`,
   )
 }
+function readFleetTrackedPaths(dest) {
+  try {
+    return new Set(
+      execFileSync('git', ['ls-files', '--cached', '-z'], {
+        cwd: dest,
+        encoding: 'utf8',
+        stdio: ['ignore', 'pipe', 'pipe'],
+      })
+        .split('\0')
+        .filter(Boolean)
+        .map(normalizeBundlePath),
+    )
+  } catch (error) {
+    throw new Error(
+      `install-fleet: cannot read the tracked-path inventory for ${dest}; automatic hydration stopped before writing files: ${errorMessage(error)}. Fix the Git checkout, then retry.`,
+      { cause: error },
+    )
+  }
+}
+function refreshFleetPackCheckoutExcludes(config) {
+  const cfg = {
+    __proto__: null,
+    ...config,
+  }
+  let excludePath
+  try {
+    const gitPath = execFileSync(
+      'git',
+      ['rev-parse', '--git-path', 'info/exclude'],
+      {
+        cwd: cfg.dest,
+        encoding: 'utf8',
+      },
+    ).trim()
+    excludePath = path.resolve(cfg.dest, gitPath)
+  } catch {
+    return
+  }
+  const existing = existsSync(excludePath)
+    ? readFileSync(excludePath, 'utf8')
+    : ''
+  const begin = packBeginMarker()
+  const end = packEndMarker()
+  const start = existing.indexOf(begin)
+  const finish = start === -1 ? -1 : existing.indexOf(end, start + begin.length)
+  const withoutManaged =
+    start === -1
+      ? existing.trimEnd()
+      : `${existing.slice(0, start).trimEnd()}\n${finish === -1 ? '' : existing.slice(finish + end.length).trimStart()}`.trimEnd()
+  const block = [
+    begin,
+    ...HARNESS_ALIAS_PATHS,
+    ...fleetPackOwnedPaths(cfg.manifest),
+    end,
+  ].join('\n')
+  mkdirSync(path.dirname(excludePath), { recursive: true })
+  writeFileSync(
+    excludePath,
+    `${withoutManaged ? `${withoutManaged}\n` : ''}${block}\n`,
+  )
+}
 /**
  * Apply thin mode: refresh the gitignore block (refreshFleetPackIgnores), then
  * untrack those paths from git so the fetch action repopulates them going
@@ -17254,7 +17315,7 @@ function untrackFleetPackPaths(config) {
         },
       )
     } catch (e) {
-      logger$5.log(
+      logger$3.log(
         `install-fleet: --thin: git rm --cached failed (non-fatal) — ${errorMessage(e)}`,
       )
     }
@@ -19218,7 +19279,7 @@ function untrackGeneratedOutputs(dest, generatedPaths) {
       },
     )
   } catch (e) {
-    logger$4.log(
+    logger$2.log(
       `install-fleet: untracking generated outputs failed (non-fatal) — ${errorMessage(e)}`,
     )
   }
@@ -19269,7 +19330,7 @@ function installSettingsSegment(segmentsDir, dest, manifest) {
   if (segment === void 0) return 0
   const sourcePath = path.join(segmentsDir, segmentFileName(segment.path))
   if (!existsSync(sourcePath)) {
-    logger$4.log(
+    logger$2.log(
       `install-fleet: Claude settings segment missing at ${sourcePath} — refusing to merge.`,
     )
     return 1
@@ -19288,7 +19349,7 @@ function installSettingsSegment(segmentsDir, dest, manifest) {
     writeFileSync(targetPath, `${JSON.stringify(merged, void 0, 2)}\n`)
     return 0
   } catch (e) {
-    logger$4.log(
+    logger$2.log(
       `install-fleet: Claude settings merge failed for ${targetPath}: ${errorMessage(e)}. Nothing written.`,
     )
     return 1
@@ -19304,7 +19365,7 @@ function installWorkspaceSegment(segmentsDir, dest, manifest) {
   if (ws === void 0) return 0
   const fleetFile = path.join(segmentsDir, 'pnpm-workspace.yaml.fleet')
   if (!existsSync(fleetFile)) {
-    logger$4.log(
+    logger$2.log(
       `install-fleet: workspace segment file missing at ${fleetFile} — skipping workspace merge`,
     )
     return 0
@@ -19326,7 +19387,7 @@ function installWorkspaceSegment(segmentsDir, dest, manifest) {
     })
     writeFileSync(targetPath, merged)
   } catch (e) {
-    logger$4.log(
+    logger$2.log(
       `install-fleet: pnpm-workspace.yaml merge failed — ${errorMessage(e)}. Nothing written.`,
     )
     return 1
@@ -19355,7 +19416,7 @@ const PREPARE_FROM_TEMPLATE =
 function wirePackageJson(dest) {
   const pkgPath = path.join(dest, 'package.json')
   if (!existsSync(pkgPath)) {
-    logger$4.log(
+    logger$2.log(
       `install-fleet: --wire: no package.json at ${pkgPath} — skipping`,
     )
     return
@@ -19931,7 +19992,7 @@ async function fetchBundleSource(config) {
     tmp: cfg.tmp,
     expectedReceipt: cfg.expectedReceipt,
   })
-  logger$3.error(
+  logger$1.error(
     `install-fleet: fetched ${cfg.ref} from ghcr (${ghcrBundleRepo(cfg.repo)}).`,
   )
   return {
@@ -45753,6 +45814,7 @@ async function executeMain(main, meta) {
     else logger$2.error((0, import_message.errorMessage)(e))
     process$1.exitCode = exitCode
   }
+  return repaired
 }
 function answerScriptHelp(argv, meta) {
   if (meta) {
