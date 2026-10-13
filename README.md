@@ -36,6 +36,10 @@ const user = await runChallengeAware(attemptWhoami, {
 })
 ```
 
+### Documentation
+
+See the [API reference](./docs/api.md) for every published subpath, signatures, input/result types, npm locator contracts, timing defaults, and usage examples.
+
 `./npm`, the dependency-free npm site-knowledge layer:
 
 ```js
