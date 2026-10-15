@@ -3,7 +3,8 @@
 # under .github/actions/fleet/ (cascade-updated), referenced by ./ path — no
 # cross-repo reusable workflow, no first-party `uses:@sha`. Add repo-specific
 # jobs anywhere under `jobs:`.
-name: "ci: gates"
+name: 'ci: gates'
+run-name: 'ci: gates'
 
 on:
   push:
@@ -52,8 +53,8 @@ jobs:
   # `strategy.job-total < 2` skip runs it in the non-matrix check job, skips it
   # in the test matrix).
   check:
-    name: 🔎 Check
-    runs-on: ubuntu-latest
+    name: Check
+    runs-on: ubuntu-26.04
     timeout-minutes: 10
     steps:
       - name: Bootstrap checkout
@@ -80,7 +81,8 @@ jobs:
             git fetch "${FETCH_ARGS[@]}"
           fi
           git checkout -q --detach FETCH_HEAD
-      - uses: ./.github/actions/fleet/setup-and-install
+      - name: Set up and install
+        uses: ./.github/actions/fleet/setup-and-install
         with:
           # Full history: the commit-history checks (AI-attribution,
           # release-boundary) read the default branch's history and refuse a
@@ -95,17 +97,18 @@ jobs:
           # SOCKET_PAYLOAD_CLIENT_ID var + SOCKET_PAYLOAD_APP_PRIVATE_KEY secret.
           payload-token-client-id: ${{ secrets.SOCKET_RELEASE_CLIENT_ID || vars.SOCKET_RELEASE_CLIENT_ID }}
           payload-token-private-key: ${{ secrets.SOCKET_RELEASE_APP_PRIVATE_KEY }}
-      - uses: ./.github/actions/fleet/run-script
+      - name: Run checks
+        uses: ./.github/actions/fleet/run-script
         with:
           main-script: pnpm run check --all
 
   test:
-    name: 🧪 Test
+    name: Test
     strategy:
       fail-fast: false
       max-parallel: 4
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-26.04, macos-26, windows-2025]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
     steps:
@@ -133,7 +136,8 @@ jobs:
             git fetch "${FETCH_ARGS[@]}"
           fi
           git checkout -q --detach FETCH_HEAD
-      - uses: ./.github/actions/fleet/setup-and-install
+      - name: Set up and install
+        uses: ./.github/actions/fleet/setup-and-install
         with:
           socket-api-token: ${{ secrets.SOCKET_API_TOKEN_FOR_CLI_AND_SFW }}
           # Thin-distribution CI auth: mint a contents:read-only token so the
@@ -149,7 +153,7 @@ jobs:
       # explicitly, and on Windows schannel additionally demands revocation
       # status the proxy-minted certs cannot publish. A no-op for repos (and
       # steps) that never invoke cargo.
-      - name: Trust the firewall CA in cargo
+      - name: Trust the firewall CA in cargo.
         # CARGO_HTTP_CAINFO REPLACES cargo's trust store. The fleet bypass
         # list routes the registry hosts (index.crates.io, static.crates.io,
         # crates.io) DIRECT past the proxy, so the CA file must merge the
@@ -165,7 +169,8 @@ jobs:
           if [ "$RUNNER_OS" = "Windows" ]; then
             echo "CARGO_HTTP_CHECK_REVOKE=false" >> "$GITHUB_ENV"
           fi
-      - uses: ./.github/actions/fleet/run-script
+      - name: Run tests
+        uses: ./.github/actions/fleet/run-script
         env:
           # Authenticate build-time GitHub API reads (release listings,
           # prebuilt-artifact downloads). Unauthenticated calls share the
